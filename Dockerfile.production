@@ -1,0 +1,25 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm install --silent
+
+COPY src ./src
+COPY public ./public
+COPY db ./db
+COPY configs ./configs
+COPY bin ./bin
+COPY tsconfig.json .
+COPY .env.production .
+COPY .sequelizerc .
+
+RUN npm run build
+
+EXPOSE 3000
+
+RUN chmod +x ./bin/start_server.sh
+
+CMD ["sh", "./bin/start_server.sh"]

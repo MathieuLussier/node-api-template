@@ -1,0 +1,85 @@
+version: '3.9'
+
+services:
+  proxy:
+    container_name: proxy
+    image: nginx:alpine
+    ports:
+      - 80:80
+      - 443:443
+    expose:
+      - 80
+      - 443
+    volumes:
+      - ./configs/nginx.conf:/etc/nginx/nginx.conf
+    restart: always
+    networks:
+      - x_trait_network
+    depends_on:
+      - server
+    links:
+      - server
+
+  redis:
+    container_name: redis
+    image: redis:6.2.14-alpine
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      timeout: 10s
+      retries: 10
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    restart: always
+    networks:
+      - x_trait_network
+
+  server:
+    container_name: server
+    image: pandrive:0.1.0
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    restart: always
+    networks:
+      - x_trait_network
+    links:
+      - database
+      - redis
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  database:
+    container_name: database
+    image: mysql:8
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "database" ]
+      timeout: 10s
+      retries: 10
+    cap_add:
+      - SYS_NICE
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - db:/var/lib/mysql
+    restart: always
+    networks:
+      - x_trait_network
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+networks:
+  x_trait_network:
+    driver: bridge
+
+volumes:
+  db:
+    driver: local

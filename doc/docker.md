@@ -1,0 +1,1 @@
+docker compose --env-file .env.production -f docker-compose.production.yml config >> docker-compose.yml

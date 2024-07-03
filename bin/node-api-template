@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+require('@configs/env.config')('production');
+const logger = require('../dist/utils/logger.util').default;
+const App = require('../dist/app').default;
+const app = new App().app;
+
+const port = process.env.PORT || 3000;
+
+const server = app.listen(port, () => {
+  logger.info(`Listening on port ${port}`);
+});
+
+const exit = () => {
+  if (server) server.close();
+  logger.info('server close');
+  process.exit(0);
+};
+
+const unexpectedError = (error) => {
+  logger.error(error);
+  exit();
+};
+
+process.on('uncaughtException', unexpectedError);
+process.on('unhandledRejection', unexpectedError);
+
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received');
+  exit();
+});
+
+module.exports = server;

@@ -1,0 +1,49 @@
+{
+  "ts-node": {
+    "require": ["tsconfig-paths/register"],
+    "transpileOnly": true
+  },
+  "compilerOptions": {
+    "types": ["node", "jest", "express"],
+
+    "target": "ES2021",                                  
+    "lib": ["ES2021"],                                      
+
+    "experimentalDecorators": true,                   
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "node",                    
+
+    "module": "commonjs",                                
+    "rootDir": "src",                                 
+
+    "baseUrl": ".",                                  
+    "paths": {
+      "@src/*": ["src/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@models/*": ["src/models/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
+      "@libs/*": ["src/libs/*"],
+      "@configs/*": ["configs/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@events": ["src/events/*"],
+      "@base": ["src/base/*"],
+      "@content": ["src/content/*"],
+    },                                      
+
+    "resolveJsonModule": true,                           
+
+    "allowJs": true,                                     
+
+    "outDir": "dist/",
+
+    "esModuleInterop": true,                             
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "alwaysStrict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build", "configs", "bin", "public", "logs", "db", "src/server.ts"]
+}
