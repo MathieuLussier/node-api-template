@@ -26,7 +26,11 @@ export const checkApiToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers['x-api-key'];
+  let token = req.headers['x-api-key'] || req.headers['authorization'];
+  // if token is in the authorization header, we need to extract it
+  if (token && token.toString().startsWith('Bearer ')) {
+    token = token.toString().replace('Bearer ', '');
+  }
   const secretKey = process.env.JWT_TOKEN_SECRET || '';
 
   if (!token) {
