@@ -21,7 +21,7 @@ import httpStatus from 'http-status';
 export default class App {
   public app: Application = express();
 
-  protected _routers = [new IndexController()];
+  protected _controllers = [new IndexController()];
 
   protected _tasks = [new ApiTask()];
 
@@ -49,8 +49,8 @@ export default class App {
   }
 
   routes(): void {
-    for (const router of this._routers) {
-      this.app.use(router.router);
+    for (const controller of this._controllers) {
+      this.app.use(controller.router);
     }
   }
 
