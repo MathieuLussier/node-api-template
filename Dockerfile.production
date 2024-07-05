@@ -1,25 +1,38 @@
-FROM node:20-alpine
+FROM node:18.20.2-buster as build
 
-WORKDIR /app
+WORKDIR /src
 
-COPY package.json .
-COPY package-lock.json .
+COPY package*.json .
 
 RUN npm install --silent
 
-COPY src ./src
-COPY public ./public
-COPY db ./db
-COPY configs ./configs
-COPY bin ./bin
-COPY tsconfig.json .
-COPY .env.production .
-COPY .sequelizerc .
+COPY . .
 
 RUN npm run build
 
+FROM node:18.20.2-buster as production
+
+WORKDIR /app
+ENV PATH /app/bin:$PATH
+
+COPY --from=build /src/dist /app/dist
+COPY --from=build /src/package*.json /app/
+COPY --from=build /src/bin /app/bin
+COPY --from=build /src/configs /app/configs
+COPY --from=build /src/db /app/db
+COPY --from=build /src/private /app/private
+COPY --from=build /src/public /app//public
+COPY --from=build /src/scripts /app/scripts
+COPY --from=build /src/.sequelizerc /app/.sequelizerc
+COPY --from=build /src/.env.production /app/.env.production
+
+RUN rm -rf /app/dist/__test__
+
+RUN npm ci --omit=dev
+
 EXPOSE 3000
 
-RUN chmod +x ./bin/start_server.sh
+RUN chmod +x /app/bin/start_server.sh
+RUN chmod +x /app/bin/www
 
-CMD ["sh", "./bin/start_server.sh"]
+CMD ["start_server.sh", "--env", "production"]

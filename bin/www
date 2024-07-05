@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-require('@configs/env.config')('production');
+require('../configs/env.config')('production');
 const logger = require('../dist/utils/logger.util').default;
 const App = require('../dist/app').default;
 const app = new App().app;

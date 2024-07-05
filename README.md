@@ -10,7 +10,7 @@ Todo
 
 Application:
 - [ ] Create an error handler wrapper for all the routes.
-- [ ] On 1.0.0 release, finish the docker file and docker-compose file.
+- [x] Create docker file and docker-compose file.
 - [ ] Create tests using samples data
 - [ ] Create seed data
 

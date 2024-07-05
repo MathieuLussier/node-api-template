@@ -28,7 +28,7 @@
       "@middlewares/*": ["src/middlewares/*"],
       "@events": ["src/events/*"],
       "@base": ["src/base/*"],
-      "@content": ["src/content/*"],
+      "@content": ["src/content/*"]
     },                                      
 
     "resolveJsonModule": true,                           

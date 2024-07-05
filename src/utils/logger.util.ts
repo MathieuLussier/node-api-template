@@ -71,7 +71,7 @@ const errorDailyRotateTransport = new DailyRotateFile({
 });
 
 const logger = createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.NODE_ENV === 'production' ? 'http' : 'debug',
   silent: process.env.NODE_ENV === 'test',
   format: format.combine(
     format.timestamp({

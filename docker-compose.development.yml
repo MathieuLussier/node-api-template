@@ -1,24 +1,25 @@
-version: '3.9'
-
 services:
   redis:
-    container_name: redis
+    container_name: node_api_redis
     image: redis:6.2.14-alpine
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      timeout: 10s
-      retries: 10
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - 6379:6379
     expose:
       - 6379
     restart: always
     networks:
-      - x_trait_network
+      - node_api_network
 
   server:
-    container_name: server
-    image: pandrive:0.1.0
+    container_name: node_api_server
+    build:
+      context: .
+      dockerfile: Dockerfile.development
     volumes:
       - .:/app
     ports:
@@ -27,7 +28,9 @@ services:
       - 3000
     restart: always
     networks:
-      - x_trait_network
+      - node_api_network
+    environment:
+      - REDIS_HOST=redis
     links:
       - database
       - redis
@@ -38,29 +41,30 @@ services:
         condition: service_healthy
 
   database:
-    container_name: database
-    image: mysql:8
+    container_name: node_api_database
+    image: postgres:16.3
+    user: postgres
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "database" ]
-      timeout: 10s
-      retries: 10
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     cap_add:
       - SYS_NICE
     ports:
-      - 3306:3306
+      - 5432:5432
     expose:
-      - 3306
+      - 5432
     volumes:
-      - db:/var/lib/mysql
+      - db:/var/lib/postgresql/data
     restart: always
     networks:
-      - x_trait_network
+      - node_api_network
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - POSTGRES_PASSWORD=myPassword
 
 networks:
-  x_trait_network:
+  node_api_network:
     driver: bridge
 
 volumes:
