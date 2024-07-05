@@ -139,7 +139,8 @@ build/
 
 tmp/
 
-public/
+public/**/*
 !public/.gitkeep
 
-configs/pandrive-google-service-account.json
+private/**/*
+!private/.gitkeep
