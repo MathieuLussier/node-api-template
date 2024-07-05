@@ -2,9 +2,9 @@
   "name": "node-api-template",
   "version": "0.1.0",
   "description": "node-api-template is a micro service api template.",
-  "main": "bin/node-api-template",
+  "main": "bin/www",
   "scripts": {
-    "start": "node --trace-deprecation bin/node-api-template",
+    "start": "node --trace-deprecation bin/www",
     "dev": "npx nodemon",
     "build": "npx rimraf dist && npx tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "clean": "npx rimraf dist",
